@@ -1,7 +1,11 @@
 package com.schoolproject.ChatAPP.controllers;
 
 import com.schoolproject.ChatAPP.repository.UserRepository;
+import com.schoolproject.ChatAPP.requests.LoginRequest;
+import com.schoolproject.ChatAPP.responses.LoginResponse;
 import com.schoolproject.ChatAPP.util.JwtUtil;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -66,6 +70,59 @@ public class AuthController {
     }
 
 
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
+        try {
+            String email = loginRequest.getEmail();
+            String password = loginRequest.getPassword();
+
+            // Check for required fields
+            if (email == null || password == null) {
+                return ResponseEntity.badRequest().body("Email and Password are required.");
+            }
+
+            // Find the user by email
+            Optional<User> userOptional = userRepository.findByEmail(email);
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(404).body("User not found.");
+            }
+
+            User user = userOptional.get();
+
+            // Verify password
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                return ResponseEntity.badRequest().body("Password is incorrect.");
+            }
+
+            // Generate JWT token
+            String jwtToken = jwtUtil.generateToken(email, user.getId());
+
+            // Set JWT as a cookie
+            Cookie jwtCookie = new Cookie("jwt", jwtToken);
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setSecure(true);
+            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(24 * 60 * 60); // 1 day
+            response.addCookie(jwtCookie);
+
+            // Return user details
+            return ResponseEntity.ok(new LoginResponse(
+                    user.getId(),
+                    user.getEmail(),
+                    user.isProfileSetup(),
+                    user.getFirstname(),
+                    user.getLastname(),
+                    user.getImage(),
+                    user.getColor()
+            ));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Internal Server Error");
+        }
+    }
+
+
     // Inner class for response structure
     static class AuthResponse {
         public String id;
@@ -79,37 +136,4 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/hello")
-    public String login (){
-        return "You are loged in";
-    }
 }
-
-
-//package com.schoolproject.ChatAPP.controllers;
-//
-//import com.schoolproject.ChatAPP.model.User;
-//import com.schoolproject.ChatAPP.repository.UserRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.http.ResponseEntity;
-//import org.springframework.web.bind.annotation.*;
-//
-//@RestController
-//@RequestMapping("/api/auth")
-//public class AuthController {
-//
-//    @Autowired
-//    private UserRepository userRepository;
-//
-//    @PostMapping("/signup")
-//    public ResponseEntity<String> signup(@RequestBody User user) {
-//        // Save the user and return response
-//        userRepository.save(user);
-//        return ResponseEntity.ok("User registered successfully!");
-//    }
-//
-//    @GetMapping("/test")
-//    public ResponseEntity<String> test() {
-//        return ResponseEntity.ok("Test endpoint is accessible!");
-//    }
-//}
