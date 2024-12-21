@@ -11,7 +11,7 @@ public class UpdateProfileResponse {
 
     // Constructor, getters, and setters
 
-    public UpdateProfileResponse(String id, int color, String image, String lastname, String firstname, boolean profileSetup, String email) {
+    public UpdateProfileResponse(String id, String email, boolean profileSetup, String firstname, String lastname, String image, int color) {
         this.id = id;
         this.color = color;
         this.image = image;
@@ -20,6 +20,8 @@ public class UpdateProfileResponse {
         this.profileSetup = profileSetup;
         this.email = email;
     }
+
+
 
     public String getId() {
         return id;
