@@ -1,8 +1,10 @@
 package com.schoolproject.ChatAPP.controllers;
 
 import com.schoolproject.ChatAPP.repository.UserRepository;
+import com.schoolproject.ChatAPP.requests.LogOutRequest;
 import com.schoolproject.ChatAPP.requests.LoginRequest;
 import com.schoolproject.ChatAPP.responses.LoginResponse;
+import com.schoolproject.ChatAPP.responses.SignUpResponse;
 import com.schoolproject.ChatAPP.util.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +36,7 @@ public class AuthController {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@Valid @RequestBody User userRequest) {
+    public ResponseEntity<?> signup(@Valid @RequestBody User userRequest, HttpServletResponse response) {
         try {
             // Check for required fields
             if (userRequest.getEmail() == null || userRequest.getPassword() == null) {
@@ -59,9 +61,17 @@ public class AuthController {
             // Generate JWT token
             String jwtToken = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getId());
 
+            // Set JWT as a cookie
+            Cookie jwtCookie = new Cookie("jwt", jwtToken);
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setSecure(true);
+//            jwtCookie.setPath("/");
+            jwtCookie.setMaxAge(24 * 60 * 60); // 1 day
+            response.addCookie(jwtCookie);
+
             // Response
             return ResponseEntity.status(201).body(
-                    new AuthResponse(savedUser.getId(), savedUser.getEmail(), jwtToken)
+                    new SignUpResponse(savedUser.getId(), savedUser.getEmail(), savedUser.isProfileSetup())
             );
         } catch (Exception e) {
             e.printStackTrace(); // Log the stack trace for debugging
@@ -122,18 +132,27 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logOut(@RequestBody LogOutRequest logoutRequest, HttpServletResponse response) {
+        try {
+            Optional<User> userOptional = userRepository.findById(logoutRequest.getUserId());
 
-    // Inner class for response structure
-    static class AuthResponse {
-        public String id;
-        public String email;
-        public String jwt;
+            if (userOptional.isEmpty()) {
+                return ResponseEntity.status(404).body("User not found");
+            }
 
-        public AuthResponse(String id, String email, String jwt) {
-            this.id = id;
-            this.email = email;
-            this.jwt = jwt;
+            // Clear the JWT cookie
+            Cookie jwtCookie = new Cookie("jwt", "");
+            jwtCookie.setMaxAge(1); // Cookie expires immediately
+            jwtCookie.setSecure(true); // Use secure cookies
+            jwtCookie.setHttpOnly(true); // HttpOnly for security
+//            jwtCookie.setPath("/"); // Cookie path
+            response.addCookie(jwtCookie);
+
+            return ResponseEntity.ok("Logout Successful.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Internal Server Error");
         }
     }
-
 }
