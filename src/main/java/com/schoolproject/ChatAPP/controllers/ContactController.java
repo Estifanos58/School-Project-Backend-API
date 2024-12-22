@@ -39,12 +39,13 @@ public class ContactController {
             }
 
             // Escape special characters for regex
-            String sanitizedSearchTerm = searchTerm.replaceAll("[.*+?^${}()|[\\]\\\\]", "\\\\$&");
+            String sanitizedSearchTerm = searchTerm.replaceAll("[.*+?^${}()|\\[\\]\\\\]", "\\\\$&");
             Pattern regex = Pattern.compile(sanitizedSearchTerm, Pattern.CASE_INSENSITIVE);
 
             // Fetch contacts excluding the current user
             List<User> contacts = userRepository.findByIdNotAndFirstnameRegexOrLastnameRegexOrEmailRegex(
                     userId, regex.pattern(), regex.pattern(), regex.pattern());
+            System.out.println(contacts);
 
             return ResponseEntity.ok(contacts);
         } catch (Exception e) {
