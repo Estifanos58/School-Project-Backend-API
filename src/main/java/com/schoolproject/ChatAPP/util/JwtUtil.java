@@ -1,8 +1,10 @@
 package com.schoolproject.ChatAPP.util;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -28,6 +30,25 @@ public class JwtUtil {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(SECRET_KEY)
                 .compact();
+    }
+
+    // Extract userId from token
+    public String extractUserId(String token) {
+        Claims claims = Jwts.parserBuilder()
+                .setSigningKey(SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+        return claims.get("userId", String.class);
+    }
+
+    // Get JWT token from request (cookie)
+    public String getJwtFromRequest(HttpServletRequest request) {
+        String cookie = request.getHeader("Cookie");
+        if (cookie != null && cookie.contains("jwt=")) {
+            return cookie.split("jwt=")[1].split(";")[0];
+        }
+        throw new RuntimeException("JWT token not found in request");
     }
 
     public static SecretKey getSecretKey() {
