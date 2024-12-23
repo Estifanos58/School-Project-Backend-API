@@ -1,13 +1,14 @@
 package com.schoolproject.ChatAPP.controllers;
 
-import com.schoolproject.ChatAPP.repository.UserRepository;
-import com.schoolproject.ChatAPP.repository.ChannelRepository;
-import com.schoolproject.ChatAPP.requests.ChannelRequest;
-import com.schoolproject.ChatAPP.model.User;
 import com.schoolproject.ChatAPP.model.Channel;
+import com.schoolproject.ChatAPP.model.User;
 import com.schoolproject.ChatAPP.model.Message;
+import com.schoolproject.ChatAPP.repository.ChannelRepository;
+import com.schoolproject.ChatAPP.repository.UserRepository;
+import com.schoolproject.ChatAPP.requests.ChannelRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,8 +40,8 @@ public class ChannelController {
 
             Channel newChannel = new Channel();
             newChannel.setName(request.getName());
-            newChannel.setMembers(request.getMembers());
-            newChannel.setAdmin(userId);
+            newChannel.setMembers(validMembers);
+            newChannel.setAdmin(admin.get());
 
             channelRepository.save(newChannel);
             return ResponseEntity.status(201).body(newChannel);
