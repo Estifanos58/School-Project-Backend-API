@@ -2,6 +2,7 @@ package com.schoolproject.ChatAPP.controllers;
 
 import com.schoolproject.ChatAPP.repository.UserRepository;
 import com.schoolproject.ChatAPP.repository.ChannelRepository;
+import com.schoolproject.ChatAPP.requests.ChannelRequest;
 import com.schoolproject.ChatAPP.model.User;
 import com.schoolproject.ChatAPP.model.Channel;
 import com.schoolproject.ChatAPP.model.Message;
