@@ -5,6 +5,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 
 @Document(collection = "messages") // MongoDB Collection name
@@ -102,4 +103,6 @@ public class Message {
     public void setTimestamps(LocalDateTime timestamps) {
         this.timestamps = timestamps;
     }
+
+
 }
