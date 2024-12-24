@@ -53,5 +53,24 @@ public class ContactController {
             return ResponseEntity.internalServerError().body("Internal Server Error");
         }
     }
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getAllContacts(HttpServletRequest httpRequest) {
+        try {
+            // Get JWT token from the cookie
+            String token = jwtUtil.getJwtFromRequest(httpRequest);
+
+            // Extract userId from JWT
+            String userId = jwtUtil.extractUserId(token);
+
+            // Fetch all contacts excluding the current user
+            List<User> contacts = userRepository.findByIdNot(userId);
+
+            return ResponseEntity.ok(contacts);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Internal Server Error");
+        }
+    }
 }
 
