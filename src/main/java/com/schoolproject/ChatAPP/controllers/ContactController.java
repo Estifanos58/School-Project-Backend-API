@@ -54,7 +54,7 @@ public class ContactController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get-all-contacts")
     public ResponseEntity<?> getAllContacts(HttpServletRequest httpRequest) {
         try {
             // Get JWT token from the cookie
