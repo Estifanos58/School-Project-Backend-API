@@ -32,8 +32,8 @@ public class WebSocketService {
         Message savedMessage = messageRepository.save(message);
 
         // Resolve sender and recipient session IDs
-        String senderId = message.getSender().getId();  // Extract sender ID
-        String recipientId = message.getRecipient().getId(); // Extract recipient ID
+        String senderId = message.getSender();  // Extract sender ID
+        String recipientId = message.getRecipient(); // Extract recipient ID
 
         String senderSessionId = sessionManager.getSessionId(senderId); // Fixed
         String recipientSessionId = sessionManager.getSessionId(recipientId); // Fixed

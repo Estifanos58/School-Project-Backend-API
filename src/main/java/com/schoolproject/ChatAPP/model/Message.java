@@ -15,10 +15,10 @@ public class Message {
     private String id; // MongoDB ObjectId
 
     @DBRef
-    private User sender; // Reference to User (Sender)
+    private String sender; // Reference to User (Sender)
 
     @DBRef
-    private User recipient; // Reference to User (Recipient, optional)
+    private String recipient; // Reference to User (Recipient, optional)
 
     private String messageType; // Type of message (text or file)
 
@@ -30,7 +30,7 @@ public class Message {
     private LocalDateTime timestamps; // Created timestamp
 
     // Custom constructor for validation
-    public Message(User sender, User recipient, String messageType, String content, String fileUrl) {
+    public Message(String sender, String recipient, String messageType, String content, String fileUrl) {
         this.sender = sender;
         this.recipient = recipient;
         this.messageType = messageType;
@@ -52,11 +52,11 @@ public class Message {
         return id;
     }
 
-    public User getSender() {
+    public String getSender() {
         return sender;
     }
 
-    public User getRecipient() {
+    public String getRecipient() {
         return recipient;
     }
 
@@ -80,11 +80,11 @@ public class Message {
         this.id = id;
     }
 
-    public void setSender(User sender) {
+    public void setSender(String sender) {
         this.sender = sender;
     }
 
-    public void setRecipient(User recipient) {
+    public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
 

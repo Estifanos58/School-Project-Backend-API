@@ -1,5 +1,7 @@
 package com.schoolproject.ChatAPP.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -10,6 +12,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "users")
 public class User {
 
+    // No-argument constructor (required by Jackson)
+    public User() {}
+
+    @JsonCreator
+    public User(@JsonProperty("id") String id) {
+        this.id = id;
+    }
     @Id
     private String id;
 
