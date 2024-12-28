@@ -27,27 +27,36 @@ public class WebSocketService {
     private WebSocketSessionManager sessionManager;
 
     public void sendMessage(Message message) {
-        // Save message to MongoDB
-        message.setTimestamps(LocalDateTime.now());
-        Message savedMessage = messageRepository.save(message);
+        try {
+            // Log message details before saving
+            System.out.println("Saving Message: " + message);
 
-        // Resolve sender and recipient session IDs
-        String senderId = message.getSender();  // Extract sender ID
-        String recipientId = message.getRecipient(); // Extract recipient ID
+            message.setTimestamps(LocalDateTime.now());
+            Message savedMessage = messageRepository.save(message);
 
-        String senderSessionId = sessionManager.getSessionId(senderId); // Fixed
-        String recipientSessionId = sessionManager.getSessionId(recipientId); // Fixed
+            System.out.println("Saved Message ID: " + savedMessage.getId());
 
-        // Send message to recipient
-        if (recipientSessionId != null) {
-            messagingTemplate.convertAndSendToUser(recipientSessionId, "/queue/messages", savedMessage);
-        }
+            // Resolve sender and recipient session IDs
+            String senderId = message.getSender();
+            String recipientId = message.getRecipient();
 
-        // Send message to sender
-        if (senderSessionId != null) {
-            messagingTemplate.convertAndSendToUser(senderSessionId, "/queue/messages", savedMessage);
+            String senderSessionId = WebSocketSessionManager.getSessionId(senderId);
+            String recipientSessionId = WebSocketSessionManager.getSessionId(recipientId);
+
+            // Send message to recipient
+            if (recipientSessionId != null) {
+                messagingTemplate.convertAndSendToUser(recipientSessionId, "/queue/messages", savedMessage);
+            }
+
+            // Send message to sender
+            if (senderSessionId != null) {
+                messagingTemplate.convertAndSendToUser(senderSessionId, "/queue/messages", savedMessage);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
 
     public void sendChannelMessage(Message message, String channelId) {
         // Save message to MongoDB
@@ -62,14 +71,14 @@ public class WebSocketService {
 
         // Send message to all channel members
         channel.getMembers().forEach(member -> {
-            String memberSessionId = sessionManager.getSessionId(member.getId()); // Fixed
+            String memberSessionId = WebSocketSessionManager.getSessionId(member.getId()); // Fixed
             if (memberSessionId != null) {
                 messagingTemplate.convertAndSendToUser(memberSessionId, "/queue/channel-messages", savedMessage);
             }
         });
 
         // Notify the admin
-        String adminSessionId = sessionManager.getSessionId(channel.getAdmin().getId()); // Fixed
+        String adminSessionId = WebSocketSessionManager.getSessionId(channel.getAdmin().getId()); // Fixed
         if (adminSessionId != null) {
             messagingTemplate.convertAndSendToUser(adminSessionId, "/queue/channel-messages", savedMessage);
         }

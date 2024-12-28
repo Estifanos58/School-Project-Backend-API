@@ -1,12 +1,9 @@
 package com.schoolproject.ChatAPP.model;
-import org.springframework.data.annotation.CreatedDate;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
 import java.time.LocalDateTime;
-import java.util.Date;
-
 
 @Document(collection = "messages") // MongoDB Collection name
 public class Message {
@@ -14,40 +11,38 @@ public class Message {
     @Id
     private String id; // MongoDB ObjectId
 
-    @DBRef
-    private String sender; // Reference to User (Sender)
-
-    @DBRef
-    private String recipient; // Reference to User (Recipient, optional)
+    private String sender;      // Plain String ID
+    private String recipient;   // Plain String ID
 
     private String messageType; // Type of message (text or file)
 
-    private String content; // Content for text messages
+    private String content;     // Content for text messages
 
-    private String fileUrl; // URL for file messages
+    private String fileUrl;     // URL for file messages
 
-    @CreatedDate
-    private LocalDateTime timestamps; // Created timestamp
+    private LocalDateTime timestamps = LocalDateTime.now(); // Created timestamp
 
-    // Custom constructor for validation
+    // Default constructor for MongoDB
+    public Message() {}
+
+    // Custom constructor for manual creation
     public Message(String sender, String recipient, String messageType, String content, String fileUrl) {
         this.sender = sender;
         this.recipient = recipient;
-        this.messageType = messageType;
+        setMessageType(messageType); // Validates type
 
         if ("text".equals(messageType)) {
             this.content = content;
-            this.fileUrl = null; // Clear file URL if it's a text message
+            this.fileUrl = null;
         } else if ("file".equals(messageType)) {
             this.fileUrl = fileUrl;
-            this.content = null; // Clear content if it's a file message
-        } else {
-            throw new IllegalArgumentException("Invalid message type");
+            this.content = null;
         }
 
         this.timestamps = LocalDateTime.now();
     }
 
+    // Getters and setters
     public String getId() {
         return id;
     }
@@ -56,53 +51,61 @@ public class Message {
         return sender;
     }
 
-    public String getRecipient() {
-        return recipient;
-    }
-
-    public String getMessageType() {
-        return messageType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public String getFileUrl() {
-        return fileUrl;
-    }
-
-    public LocalDateTime getTimestamps() {
-        return timestamps;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public String getRecipient() {
+        return recipient;
     }
 
     public void setRecipient(String recipient) {
         this.recipient = recipient;
     }
 
+    public String getMessageType() {
+        return messageType;
+    }
+
     public void setMessageType(String messageType) {
+        if (!"text".equals(messageType) && !"file".equals(messageType)) {
+            throw new IllegalArgumentException("Invalid message type");
+        }
         this.messageType = messageType;
+
+        if ("text".equals(messageType)) {
+            this.fileUrl = null;
+        } else if ("file".equals(messageType)) {
+            this.content = null;
+        }
+    }
+
+    public String getContent() {
+        return content;
     }
 
     public void setContent(String content) {
-        this.content = content;
+        if ("text".equals(this.messageType)) {
+            this.content = content;
+        }
+    }
+
+    public String getFileUrl() {
+        return fileUrl;
     }
 
     public void setFileUrl(String fileUrl) {
-        this.fileUrl = fileUrl;
+        if ("file".equals(this.messageType)) {
+            this.fileUrl = fileUrl;
+        }
+    }
+
+    public LocalDateTime getTimestamps() {
+        return timestamps;
     }
 
     public void setTimestamps(LocalDateTime timestamps) {
         this.timestamps = timestamps;
     }
-
-
 }
+

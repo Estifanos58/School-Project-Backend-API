@@ -6,13 +6,15 @@ import org.springframework.web.socket.messaging.SessionConnectEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class WebSocketEventListener {
 
     @EventListener
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
-        String userId = event.getUser().getName(); // Assuming user ID is in the session
-        String sessionId = event.getMessage().getHeaders().get("simpSessionId").toString();
+        String userId = Objects.requireNonNull(event.getUser()).getName(); // Assuming user ID is in the session
+        String sessionId = Objects.requireNonNull(event.getMessage().getHeaders().get("simpSessionId")).toString();
         WebSocketSessionManager.addUserSession(userId, sessionId);
         System.out.println("User Connected: " + userId);
     }
