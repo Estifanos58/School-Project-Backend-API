@@ -45,12 +45,16 @@ public class WebSocketService {
 
             // Send message to recipient
             if (recipientSessionId != null) {
-                messagingTemplate.convertAndSendToUser(recipientSessionId, "/queue/messages", savedMessage);
+                System.out.println("TRYING TO SEND THE MESSAGE TO RECEIVER");
+                messagingTemplate.convertAndSend("/topic/public", savedMessage);
+
             }
 
             // Send message to sender
             if (senderSessionId != null) {
-                messagingTemplate.convertAndSendToUser(senderSessionId, "/queue/messages", savedMessage);
+                System.out.println("TRYING TO SEND THE MESSAGE TO SENDER");
+                messagingTemplate.convertAndSend("/topic/public", savedMessage);
+                System.out.println("MESSAGE SENT TO USER AT"+ message.getSender());
             }
         } catch (Exception e) {
             e.printStackTrace();

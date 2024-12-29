@@ -14,15 +14,18 @@ public class WebSocketSessionManager {
     // Store user session
     public static void addUserSession(String userId, String sessionId) {
         userSessionMap.put(userId, sessionId);
+        System.out.println("Session Added: " + userId + " -> " + sessionId);
     }
 
-    // Remove user session
-    public static void removeUserSession(String userId) {
-        userSessionMap.remove(userId);
+    public static void removeUserSession(String sessionId) {
+        userSessionMap.values().remove(sessionId);
+        System.out.println("Session Removed: " + sessionId);
     }
 
-    // Get session ID by user ID
     public static String getSessionId(String userId) {
+        System.out.println("Getting Session ID for User: " + userId);
         return userSessionMap.get(userId);
     }
+
+
 }
