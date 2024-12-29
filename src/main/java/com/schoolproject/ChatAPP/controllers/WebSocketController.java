@@ -16,6 +16,7 @@ public class WebSocketController {
     @MessageMapping("/chat.sendMessage")
     public void sendMessage(@Payload Message message) {
         // Use WebSocketService to handle saving and broadcasting the message
+        System.out.println("Received Message: " + message); // Log input
         webSocketService.sendMessage(message);
     }
 
