@@ -75,7 +75,7 @@ public class Message {
 
         if ("text".equals(messageType)) {
             this.fileUrl = null;
-        } else if ("file".equals(messageType)) {
+        } else {
             this.content = null;
         }
     }
@@ -86,7 +86,11 @@ public class Message {
 
     public void setContent(String content) {
         if ("text".equals(this.messageType)) {
+            System.out.println("MESSAGE IS TEXT");
             this.content = content;
+        }else{
+            System.out.println("THIS IS THE MESSAGE TYPE"+ messageType);
+            System.out.println("MESSAGE IS NOT TEXT");
         }
     }
 
