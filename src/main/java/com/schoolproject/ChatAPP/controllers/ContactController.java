@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import com.schoolproject.ChatAPP.requests.SearchRequest;
 
 import jakarta.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -92,7 +93,7 @@ public class ContactController {
             for (Message message : allMessages) {
                 String contactId = message.getSender().equals(userId) ? message.getRecipient() : message.getSender();
                 if (!lastMessagesMap.containsKey(contactId) ||
-                        lastMessagesMap.get(contactId).getTimestamps().before(message.getTimestamps())) {
+                        lastMessagesMap.get(contactId).getTimestamps().isBefore(message.getTimestamps())) {
                     lastMessagesMap.put(contactId, message);
                 }
             }
@@ -113,7 +114,7 @@ public class ContactController {
                         contactInfo.put("color", contact.getColor());
                         contactInfo.put("lastMessageTime", lastMessage.getTimestamps());
                         return contactInfo;
-                    }).sorted(Comparator.comparing(c -> ((Date) c.get("lastMessageTime")), Comparator.reverseOrder()))
+                    }).sorted(Comparator.comparing(c -> ((LocalDateTime) c.get("lastMessageTime")).toLocalTime(), Comparator.reverseOrder()))
                     .collect(Collectors.toList());
 
             return ResponseEntity.ok(response);
