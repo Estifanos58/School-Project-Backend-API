@@ -24,4 +24,6 @@ public interface MessageRepository extends MongoRepository<Message, String> {
     // Find all messages received by a specific user
     List<Message> findByRecipient(String recipientId);
 
+    // Find messages between two users, ordered by timestamp
+    List<Message> findBySenderAndRecipientOrRecipientAndSenderOrderByTimestamps(String sender1, String recipient1, String sender2, String recipient2);
 }
