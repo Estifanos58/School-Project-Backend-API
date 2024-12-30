@@ -22,6 +22,7 @@ public class WebSocketController {
 
     @MessageMapping("/chat.sendChannelMessage")
     public void sendChannelMessage(@Payload Message message, String channelId) {
+        System.out.println("CHANNEL ROOM REACHED");
         // Handle channel-based messaging
         webSocketService.sendChannelMessage(message, channelId);
     }

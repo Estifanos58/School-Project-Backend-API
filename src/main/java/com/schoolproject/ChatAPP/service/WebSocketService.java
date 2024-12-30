@@ -63,6 +63,7 @@ public class WebSocketService {
 
 
     public void sendChannelMessage(Message message, String channelId) {
+        System.out.println("TRYING TO SEND TO CHANNEL ");
         // Save message to MongoDB
         message.setTimestamps(LocalDateTime.now());
         message.setRecipient(null); // No specific recipient for channels
