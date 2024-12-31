@@ -70,7 +70,8 @@ public class WebSocketService {
         Message savedMessage = messageRepository.save(message);
 
         // Add message to channel
-        Channel channel = channelRepository.findById(channelId).orElseThrow();
+        Channel channel = channelRepository.findById(channelId)
+                .orElseThrow(() -> new RuntimeException("Channel not found with ID: " + channelId));
         channel.getMessages().add(savedMessage);
         channelRepository.save(channel);
 
@@ -78,6 +79,7 @@ public class WebSocketService {
         channel.getMembers().forEach(member -> {
             String memberSessionId = WebSocketSessionManager.getSessionId(member.getId()); // Fixed
             if (memberSessionId != null) {
+                System.out.println("TRYING TO SAVE AND SEND THE MESSAGE");
                 messagingTemplate.convertAndSendToUser(memberSessionId, "/queue/channel-messages", savedMessage);
             }
         });
@@ -85,6 +87,7 @@ public class WebSocketService {
         // Notify the admin
         String adminSessionId = WebSocketSessionManager.getSessionId(channel.getAdmin().getId()); // Fixed
         if (adminSessionId != null) {
+            System.out.println("TRYING TO SAVE AND SEND THE MESSAGE");
             messagingTemplate.convertAndSendToUser(adminSessionId, "/queue/channel-messages", savedMessage);
         }
     }
