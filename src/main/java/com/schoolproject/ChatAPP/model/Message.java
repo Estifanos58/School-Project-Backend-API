@@ -22,6 +22,8 @@ public class Message {
 
     private LocalDateTime timestamps = LocalDateTime.now(); // Created timestamp
 
+    private String channelId = null;
+
     // Default constructor for MongoDB
     public Message() {}
 
@@ -45,9 +47,18 @@ public class Message {
         this.timestamps = LocalDateTime.now();
     }
 
+
     // Setter for messageType
     public void setMessageType(String messageType) {
         this.messageType = messageType; // Directly set type
+    }
+
+    public void setChannelId(String channelId) {
+        this.channelId = channelId;
+    }
+
+    public String getChannelId() {
+        return channelId;
     }
 
     // Setter for content (no checks)

@@ -72,7 +72,8 @@ public class WebSocketService {
     public void sendChannelMessage(ChannelMessage channelMessage) {
         try {
             // Extract message details
-            String senderId = channelMessage.getSenderId();
+            System.out.println("THIS CHANNEL MESSAGE"+ channelMessage);
+            String sender = channelMessage.getSender();
             String channelId = channelMessage.getChannelId();
             String content = channelMessage.getContent();
             String messageType = channelMessage.getMessageType();
@@ -80,12 +81,13 @@ public class WebSocketService {
 
             // Save the message
             Message newMessage = new Message();
-            newMessage.setSender(senderId);
+            newMessage.setSender(sender);
             newMessage.setRecipient(null);
             newMessage.setContent(content);
             newMessage.setMessageType(messageType);
             newMessage.setTimestamps(LocalDateTime.now());
             newMessage.setFileUrl(fileUrl);
+            newMessage.setChannelId(channelId);
 
             Message savedMessage = messageRepository.save(newMessage);
 
@@ -100,14 +102,14 @@ public class WebSocketService {
             channel.getMembers().forEach(member -> {
                 String memberSessionId = WebSocketSessionManager.getSessionId(member.getId());
                 if (memberSessionId != null) {
-                    messagingTemplate.convertAndSendToUser(memberSessionId, "/queue/channel-messages", savedMessage);
+                    messagingTemplate.convertAndSend( "/queue/channel-messages", savedMessage);
                 }
             });
 
             // Notify the admin
             String adminSessionId = WebSocketSessionManager.getSessionId(channel.getAdmin().getId());
             if (adminSessionId != null) {
-                messagingTemplate.convertAndSendToUser(adminSessionId, "/queue/channel-messages", savedMessage);
+                messagingTemplate.convertAndSend( "/queue/channel-messages", savedMessage);
             }
         } catch (Exception e) {
             e.printStackTrace();

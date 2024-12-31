@@ -5,19 +5,19 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ChannelMessage {
-    private String senderId;
+    private String sender;
     private String channelId;
     private String content;
     private String messageType;
     private String fileUrl;
 
     // Getters and Setters
-    public String getSenderId() {
-        return senderId;
+    public String getSender() {
+        return sender;
     }
 
-    public void setSenderId(String senderId) {
-        this.senderId = senderId;
+    public void setSenderId(String sender) {
+        this.sender = sender;
     }
 
     public String getChannelId() {
@@ -50,5 +50,16 @@ public class ChannelMessage {
 
     public void setFileUrl(String fileUrl) {
         this.fileUrl = fileUrl;
+    }
+
+    @Override
+    public String toString() {
+        return "ChannelMessage{" +
+                "senderId='" + sender + '\'' +
+                ", channelId='" + channelId + '\'' +
+                ", content='" + content + '\'' +
+                ", messageType='" + messageType + '\'' +
+                ", fileUrl='" + fileUrl + '\'' +
+                '}';
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class Channel {
     private User admin; // Admin of the channel (optional)
 
     @DBRef
-    private List<Message> messages; // Messages in the channel (optional)
+    private List<Message> messages = new ArrayList<>(); // Initialize messages
 
     private Date createdAt; // Creation date
 
@@ -34,13 +35,14 @@ public class Channel {
     public Channel() {
         this.createdAt = new Date(); // Set creation date
         this.updatedAt = new Date(); // Set initial update date
+        this.messages = new ArrayList<>(); // Initialize messages
     }
 
     public Channel(String name, List<User> members, User admin, List<Message> messages) {
         this.name = name;
         this.members = members;
         this.admin = admin;
-        this.messages = messages;
+        this.messages = (messages != null) ? messages : new ArrayList<>(); // Handle null
         this.createdAt = new Date();
         this.updatedAt = new Date();
     }
@@ -79,6 +81,9 @@ public class Channel {
     }
 
     public List<Message> getMessages() {
+        if (messages == null) { // Safety check
+            messages = new ArrayList<>();
+        }
         return messages;
     }
 
