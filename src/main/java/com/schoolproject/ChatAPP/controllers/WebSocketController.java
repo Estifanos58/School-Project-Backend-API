@@ -1,6 +1,7 @@
 package com.schoolproject.ChatAPP.controllers;
 
 import com.schoolproject.ChatAPP.model.Message;
+import com.schoolproject.ChatAPP.requests.ChannelMessage;
 import com.schoolproject.ChatAPP.service.WebSocketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,9 +22,9 @@ public class WebSocketController {
     }
 
     @MessageMapping("/chat.sendChannelMessage")
-    public void sendChannelMessage(@Payload Message message, String channelId) {
+    public void sendChannelMessage(@Payload ChannelMessage channelMessage) {
         System.out.println("CHANNEL ROOM REACHED");
         // Handle channel-based messaging
-        webSocketService.sendChannelMessage(message, channelId);
+        webSocketService.sendChannelMessage(channelMessage);
     }
 }
