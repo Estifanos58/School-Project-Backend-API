@@ -67,7 +67,7 @@ public class Message {
         return senderName;
     }
 
-    public void setSednerName(String sednerName) {
+    public void setSenderName(String senderName) {
         this.senderName = senderName;
     }
 
