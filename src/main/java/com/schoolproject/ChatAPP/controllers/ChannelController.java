@@ -96,7 +96,7 @@ public class ChannelController {
     }
 
     // Get messages for a specific channel
-    @GetMapping("/{channelId}/messages")
+    @GetMapping("/get-channel-messages/{channelId}")
     public ResponseEntity<?> getChannelMessages(@PathVariable String channelId) {
         try {
             // Validate channel existence
