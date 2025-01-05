@@ -16,7 +16,7 @@ public class JwtUtil {
 
     private static final String SECRET = System.getenv("JWT_SECRET") != null
             ? System.getenv("JWT_SECRET")
-            : "default-secret-key-that-you-must-change"; // Fallback for development/testing
+            : "changedefault-secret-key-that-you-must-"; // Fallback for development/testing
 
     private static final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(Base64.getEncoder().encode(SECRET.getBytes()));
 

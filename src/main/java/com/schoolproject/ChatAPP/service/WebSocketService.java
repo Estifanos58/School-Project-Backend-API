@@ -78,6 +78,9 @@ public class WebSocketService {
             String content = channelMessage.getContent();
             String messageType = channelMessage.getMessageType();
             String fileUrl = channelMessage.getFileUrl();
+            User Sender = userRepository.findById(sender)
+                    .orElseThrow(() -> new RuntimeException("Channel not found with ID: " + sender));;
+            String senderName = (Sender.getFirstname());
 
             // Save the message
             Message newMessage = new Message();
@@ -88,6 +91,7 @@ public class WebSocketService {
             newMessage.setTimestamps(LocalDateTime.now());
             newMessage.setFileUrl(fileUrl);
             newMessage.setChannelId(channelId);
+            newMessage.setSednerName(senderName);
 
             Message savedMessage = messageRepository.save(newMessage);
 

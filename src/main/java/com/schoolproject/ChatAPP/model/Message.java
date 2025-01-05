@@ -24,6 +24,8 @@ public class Message {
 
     private String channelId = null;
 
+    private String senderName;
+
     // Default constructor for MongoDB
     public Message() {}
 
@@ -59,6 +61,14 @@ public class Message {
 
     public String getChannelId() {
         return channelId;
+    }
+
+    public String getSenderName() {
+        return senderName;
+    }
+
+    public void setSednerName(String sednerName) {
+        this.senderName = senderName;
     }
 
     // Setter for content (no checks)

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ChannelMessage {
     private String sender;
+    private String sendeName;
     private String channelId;
     private String content;
     private String messageType;
@@ -18,6 +19,14 @@ public class ChannelMessage {
 
     public void setSenderId(String sender) {
         this.sender = sender;
+    }
+
+    public String getSendeName() {
+        return sendeName;
+    }
+
+    public void setSendeName(String sendeName) {
+        this.sendeName = sendeName;
     }
 
     public String getChannelId() {
