@@ -130,4 +130,39 @@ public class UserController {
             return ResponseEntity.status(500).body("Internal Server Error");
         }
     }
+
+    @DeleteMapping("/remove-profileImage")
+    public  ResponseEntity<?> removeProfile(@CookieValue(name = "jwt", required = false) String jwtToken){
+        try{
+            if (jwtToken == null || jwtToken.isEmpty()) {
+                return ResponseEntity.status(401).body("Missing or invalid JWT token");
+            }
+
+            // Decode the JWT token
+            SecretKey secretKey = JwtUtil.getSecretKey();
+            Claims claims = Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(jwtToken)
+                    .getBody();
+
+            String userId = claims.get("userId", String.class);
+
+            if (userId == null || userId.isEmpty()) {
+                return ResponseEntity.status(400).body("Invalid user ID in token");
+            }
+
+            // Update user details
+            Optional<User> userOptional = userRepository.findById(userId);
+
+            User user = userOptional.get();
+
+            user.setImage(null);
+            userRepository.save(user);
+
+            return ResponseEntity.ok("Image deleted");
+        }catch(Exception e){
+            return ResponseEntity.status(500).body("Internal Server Error");
+        }
+    }
 }
