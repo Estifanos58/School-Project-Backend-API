@@ -72,7 +72,7 @@ public class UserController {
         }
     }
 
-    @PutMapping("/update-profile")
+    @PostMapping("/update-profile")
     public ResponseEntity<?> updateProfile(
             @CookieValue(name = "jwt", required = false) String jwtToken,
             @Valid @RequestBody UpdateProfileRequest profileRequest) {
@@ -102,11 +102,17 @@ public class UserController {
                 return ResponseEntity.status(404).body("User with the given ID not found");
             }
 
+
+
             User user = userOptional.get();
             user.setFirstname(profileRequest.getFirstname());
             user.setLastname(profileRequest.getLastname());
             user.setColor(profileRequest.getColor());
             user.setProfileSetup(true);
+
+            if(!profileRequest.getImage().isEmpty()){
+                user.setImage(profileRequest.getImage());
+            }
 
             userRepository.save(user);
 

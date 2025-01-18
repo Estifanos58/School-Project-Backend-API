@@ -1,7 +1,6 @@
 package com.schoolproject.ChatAPP.responses;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import java.util.Arrays;
 
 public class LoginResponse {
     private String id;
@@ -13,7 +12,7 @@ public class LoginResponse {
     private int color;
 
 
-    public LoginResponse(String id, String email, boolean profileSetup, String firstname, String lastname, String image, int color) {
+    public LoginResponse(String id, String email, boolean profileSetup, String firstname, String lastname, String  image, int color) {
         this.id = id;
         this.email = email;
         this.profileSetup = profileSetup;

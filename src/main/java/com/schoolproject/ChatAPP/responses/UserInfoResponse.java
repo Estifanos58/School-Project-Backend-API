@@ -8,7 +8,6 @@ public class UserInfoResponse {
     private String lastname;
     private String image;
     private int color;
-
     public UserInfoResponse(String id, String email, boolean profileSetup, String firstname, String lastname, String image, int color) {
         this.id = id;
         this.email = email;

@@ -1,5 +1,7 @@
 package com.schoolproject.ChatAPP.responses;
 
+import java.util.Arrays;
+
 public class UpdateProfileResponse {
     private String id;
     private String email;
