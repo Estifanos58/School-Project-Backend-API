@@ -14,8 +14,8 @@ public interface UserRepository extends MongoRepository<User, String> { // Add g
     Optional<User> findByEmail(String email);
 
     // Search query with regex excluding the current user
-    List<User> findByIdNotAndFirstnameRegexOrLastnameRegexOrEmailRegex(
-            String id, String firstname, String lastname, String email
+    List<User> findByIdNotAndFirstnameRegexIgnoreCaseOrIdNotAndLastnameRegexIgnoreCaseOrIdNotAndEmailRegexIgnoreCase(
+            String id1, String firstname, String id2, String lastname, String id3, String email
     );
 
     // Find all users excluding the specified ID

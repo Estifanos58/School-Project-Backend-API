@@ -31,16 +31,17 @@ public class ContactController {
     private JwtUtil jwtUtil;
 
     // Search contacts
+    // Search contacts
     @PostMapping("/search")
     public ResponseEntity<?> searchContacts(@RequestBody SearchRequest request, HttpServletRequest httpRequest) {
         try {
-            // Get JWT token
+            // Get JWT token and extract userId
             String token = jwtUtil.getJwtFromRequest(httpRequest);
             String userId = jwtUtil.extractUserId(token);
 
             // Validate search term
             String searchTerm = request.getSearchTerm();
-            if (searchTerm == null || searchTerm.isEmpty()) {
+            if (searchTerm == null || searchTerm.trim().isEmpty()) {
                 return ResponseEntity.badRequest().body("Search term is required.");
             }
 
@@ -48,9 +49,10 @@ public class ContactController {
             String sanitizedSearchTerm = searchTerm.replaceAll("[.*+?^${}()|\\[\\]\\\\]", "\\\\$&");
             Pattern regex = Pattern.compile(sanitizedSearchTerm, Pattern.CASE_INSENSITIVE);
 
-            // Fetch contacts excluding the current user
-            List<User> contacts = userRepository.findByIdNotAndFirstnameRegexOrLastnameRegexOrEmailRegex(
-                    userId, regex.pattern(), regex.pattern(), regex.pattern());
+            // Fetch matching users excluding the current user
+            List<User> contacts = userRepository.findByIdNotAndFirstnameRegexIgnoreCaseOrIdNotAndLastnameRegexIgnoreCaseOrIdNotAndEmailRegexIgnoreCase(
+                    userId, regex.pattern(), userId, regex.pattern(), userId, regex.pattern()
+            );
 
             return ResponseEntity.ok(contacts);
         } catch (Exception e) {
@@ -58,6 +60,7 @@ public class ContactController {
             return ResponseEntity.internalServerError().body("Internal Server Error");
         }
     }
+
 
     // Get all contacts
     @GetMapping("/get-all-contacts")
