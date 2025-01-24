@@ -26,6 +26,10 @@ public class Message {
 
     private String senderName;
 
+    private int color;
+
+    private String image;
+
     // Default constructor for MongoDB
     public Message() {}
 
@@ -81,22 +85,6 @@ public class Message {
         this.fileUrl = fileUrl; // Allow setting fileUrl directly
     }
 
-//    public Message(String sender, String recipient, String messageType, String content, String fileUrl) {
-//        this.sender = sender;
-//        this.recipient = recipient;
-//        setMessageType(messageType); // Validates type
-//
-//        if ("text".equals(messageType)) {
-//            this.content = content;
-//            this.fileUrl = null;
-//        } else if ("file".equals(messageType)) {
-//            this.fileUrl = fileUrl;
-//            this.content = null;
-//        }
-//
-//        this.timestamps = LocalDateTime.now();
-//    }
-
     // Getters and setters
     public String getId() {
         return id;
@@ -122,42 +110,31 @@ public class Message {
         return messageType;
     }
 
-//    public void setMessageType(String messageType) {
-//        if (!"text".equals(messageType) && !"file".equals(messageType)) {
-//            throw new IllegalArgumentException("Invalid message type");
-//        }
-//        this.messageType = messageType;
-//
-//        if ("text".equals(messageType)) {
-//            this.fileUrl = null;
-//        } else {
-//            this.content = null;
-//        }
-//    }
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
 
     public String getContent() {
         return content;
     }
 
-//    public void setContent(String content) {
-//        if ("text".equals(this.messageType)) {
-//            System.out.println("MESSAGE IS TEXT");
-//            this.content = content;
-//        }else{
-//            System.out.println("THIS IS THE MESSAGE TYPE"+ messageType);
-//            System.out.println("MESSAGE IS NOT TEXT");
-//        }
-//    }
 
     public String getFileUrl() {
         return fileUrl;
     }
 
-//    public void setFileUrl(String fileUrl) {
-//        if ("file".equals(this.messageType)) {
-//            this.fileUrl = fileUrl;
-//        }
-//    }
 
     public LocalDateTime getTimestamps() {
         return timestamps;

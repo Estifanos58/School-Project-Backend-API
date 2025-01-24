@@ -92,6 +92,8 @@ public class WebSocketService {
             newMessage.setFileUrl(fileUrl);
             newMessage.setChannelId(channelId);
             newMessage.setSenderName(senderName);
+            newMessage.setColor(Sender.getColor());
+            newMessage.setImage(Sender.getImage());
 
             Message savedMessage = messageRepository.save(newMessage);
 
