@@ -147,7 +147,7 @@ public class AuthController {
             jwtCookie.setMaxAge(1); // Cookie expires immediately
             jwtCookie.setSecure(true); // Use secure cookies
             jwtCookie.setHttpOnly(true); // HttpOnly for security
-//            jwtCookie.setPath("/"); // Cookie path
+            jwtCookie.setPath("/"); // Cookie path
             response.addCookie(jwtCookie);
 
             return ResponseEntity.ok("Logout Successful.");
