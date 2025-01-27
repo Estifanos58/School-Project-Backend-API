@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/contacts")
-@CrossOrigin(origins = "http://localhost:5173") // Adjust frontend URL
+//@CrossOrigin(origins = "http://localhost:5173") // Adjust frontend URL
 public class ContactController {
 
     @Autowired
