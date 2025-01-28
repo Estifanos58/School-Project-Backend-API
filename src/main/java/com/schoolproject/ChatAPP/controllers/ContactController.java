@@ -126,4 +126,29 @@ public class ContactController {
             return ResponseEntity.internalServerError().body("Internal Server Error");
         }
     }
+
+    @PostMapping("/find-user")
+    public ResponseEntity<?> getUser(@RequestBody FindUser findUser){
+        try {
+            String userId = findUser.getUserId();
+            Optional<User> user = userRepository.findById(userId);
+
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body("Internal Server Error");
+        }
+    }
+}
+
+class FindUser {
+    private String userId;
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }

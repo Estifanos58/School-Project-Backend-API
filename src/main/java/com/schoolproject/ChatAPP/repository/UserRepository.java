@@ -20,4 +20,6 @@ public interface UserRepository extends MongoRepository<User, String> { // Add g
 
     // Find all users excluding the specified ID
     List<User> findByIdNot(String id);
+
+    Optional<User> findById(String id);
 }
