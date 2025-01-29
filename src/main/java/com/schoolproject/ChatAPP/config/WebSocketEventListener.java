@@ -16,11 +16,17 @@ public class WebSocketEventListener {
     public void handleWebSocketConnectListener(SessionConnectEvent event) {
 
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String userId = headerAccessor.getFirstNativeHeader("username"); // Get username from headers
-
+        String userId = headerAccessor.getFirstNativeHeader("username");
         if (userId == null || userId.isEmpty()) {
-            userId = "Anonymous"; // Fallback to anonymous
+            System.out.println("Missing username header!");
+            return;
         }
+
+//        String userId = headerAccessor.getFirstNativeHeader("username"); // Get username from headers
+//
+//        if (userId == null || userId.isEmpty()) {
+//            userId = "Anonymous"; // Fallback to anonymous
+//        }
 
         String sessionId = Objects.requireNonNull(headerAccessor.getSessionId());
         WebSocketSessionManager.addUserSession(userId, sessionId);

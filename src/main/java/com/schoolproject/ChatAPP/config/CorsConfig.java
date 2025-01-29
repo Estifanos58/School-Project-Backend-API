@@ -20,13 +20,13 @@ public class CorsConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
         // Allow all origins (adjust for production)
-        corsConfiguration.setAllowedOrigins(Arrays.asList(Frontend_url));
+        corsConfiguration.setAllowedOriginPatterns(Arrays.asList(Frontend_url));
 
         // Allow HTTP methods
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
         // Allow headers
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With"));
+        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Set-Cookie"));
 
         // Allow credentials (cookies, authorization headers)
         corsConfiguration.setAllowCredentials(true);

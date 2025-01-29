@@ -69,6 +69,7 @@ public class WebSocketService {
     }
 
 
+
     public void sendChannelMessage(ChannelMessage channelMessage) {
         try {
             // Extract message details

@@ -79,6 +79,9 @@ public class ChannelController {
             String token = jwtUtil.getJwtFromRequest(httpRequest);
             String userId = jwtUtil.extractUserId(token);
 
+            // userid =1234567
+            // all chale
+
             // Fetch channels where the user is either an admin or a member
             List<Channel> channels = channelRepository.findAll()
                     .stream()

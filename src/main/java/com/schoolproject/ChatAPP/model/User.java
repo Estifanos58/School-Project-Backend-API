@@ -3,14 +3,14 @@ package com.schoolproject.ChatAPP.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+//import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Arrays;
 
 
-@Data
+//@Data
 @Document(collection = "users")
 public class User {
 
