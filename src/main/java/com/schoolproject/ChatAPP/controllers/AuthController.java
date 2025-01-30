@@ -60,7 +60,7 @@ public class AuthController {
             jwtCookie.setMaxAge(86400); // 1 day
             jwtCookie.setAttribute("SameSite", "None"); // Required for cross-origin cookies
 
-            response.addCookie(jwtCookie); // ✅ FIX: Ensure cookie is set
+            response.addCookie(jwtCookie);
 
             return ResponseEntity.status(201).body(
                     new SignUpResponse(savedUser.getId(), savedUser.getEmail(), savedUser.isProfileSetup())
@@ -70,7 +70,7 @@ public class AuthController {
             return ResponseEntity.internalServerError().body("Internal Server Error");
         }
     }
-
+//this is for tthe login route
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         try {
@@ -94,7 +94,7 @@ public class AuthController {
 
             String jwtToken = jwtUtil.generateToken(email, user.getId());
 
-            // ✅ FIX: Ensure SameSite=None and Secure for HTTPS
+
             Cookie jwtCookie = new Cookie("jwt", jwtToken);
             jwtCookie.setHttpOnly(true);
             jwtCookie.setSecure(true);
@@ -102,7 +102,7 @@ public class AuthController {
             jwtCookie.setMaxAge(86400);
             jwtCookie.setAttribute("SameSite", "None");
 
-            response.addCookie(jwtCookie); // ✅ FIX: Cookie was missing in response
+            response.addCookie(jwtCookie);
 
             return ResponseEntity.ok(new LoginResponse(
                     user.getId(),
@@ -128,7 +128,7 @@ public class AuthController {
                 return ResponseEntity.status(404).body("User not found");
             }
 
-            // ✅ FIX: Ensure SameSite=None in Logout
+
             Cookie jwtCookie = new Cookie("jwt", "");
             jwtCookie.setMaxAge(0); // Expires immediately
             jwtCookie.setSecure(true);
@@ -136,7 +136,7 @@ public class AuthController {
             jwtCookie.setPath("/");
             jwtCookie.setAttribute("SameSite", "None");
 
-            response.addCookie(jwtCookie); // ✅ FIX: Cookie now properly deleted
+            response.addCookie(jwtCookie);
 
             return ResponseEntity.ok("Logout Successful.");
         } catch (Exception e) {
