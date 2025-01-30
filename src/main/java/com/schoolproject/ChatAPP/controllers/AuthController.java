@@ -76,7 +76,7 @@ public class AuthController {
         try {
             String email = loginRequest.getEmail();
             String password = loginRequest.getPassword();
-
+// looking for email
             if (email == null || password == null) {
                 return ResponseEntity.badRequest().body("Email and Password are required.");
             }
