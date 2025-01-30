@@ -6,34 +6,39 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
-
+import java.util.List;
 @Configuration
 public class CorsConfig {
+
     @Value("${FRONTEND_URL}")
-    private String Frontend_url;
+    private String frontendUrl;
 
     @Bean
     public CorsFilter corsFilter() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
 
-        // Allow all origins (adjust for production)
-        corsConfiguration.setAllowedOriginPatterns(Arrays.asList(Frontend_url));
+        // Allow frontend URL
+        corsConfiguration.setAllowedOrigins(List.of(frontendUrl));
 
-        // Allow HTTP methods
-        corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-
-        // Allow headers
-        corsConfiguration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Requested-With", "Set-Cookie"));
-
-        // Allow credentials (cookies, authorization headers)
+        // Allow credentials (important for cookies)
         corsConfiguration.setAllowCredentials(true);
 
+        // Allow all standard HTTP methods
+        corsConfiguration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        // Allowed headers
+        corsConfiguration.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+
+        // **IMPORTANT**: Expose `Set-Cookie` header
+        corsConfiguration.setExposedHeaders(List.of("Set-Cookie"));
+
+        // Register CORS configuration
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);
 
         return new CorsFilter(source);
     }
 }
+

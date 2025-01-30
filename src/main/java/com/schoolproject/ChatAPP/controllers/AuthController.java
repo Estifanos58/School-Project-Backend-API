@@ -16,16 +16,11 @@ import org.springframework.web.bind.annotation.*;
 import com.schoolproject.ChatAPP.model.User;
 
 import java.util.Optional;
-
 import jakarta.validation.Valid;
-
-
 
 @RestController
 @RequestMapping("/api/auth")
 @Validated
-//@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
-
 public class AuthController {
 
     @Autowired
@@ -39,47 +34,42 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody User userRequest, HttpServletResponse response) {
         try {
-            // Check for required fields
             if (userRequest.getEmail() == null || userRequest.getPassword() == null) {
                 return ResponseEntity.badRequest().body("Email and Password are required.");
             }
 
-            // Check for duplicate email
             Optional<User> existingUser = userRepository.findByEmail(userRequest.getEmail());
             if (existingUser.isPresent()) {
                 return ResponseEntity.badRequest().body("Email already exists.");
             }
 
-            // Hash the password
             String hashedPassword = passwordEncoder.encode(userRequest.getPassword());
             User newUser = new User();
             newUser.setEmail(userRequest.getEmail());
             newUser.setPassword(hashedPassword);
 
-            // Save user to MongoDB
             User savedUser = userRepository.save(newUser);
 
-            // Generate JWT token
             String jwtToken = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getId());
 
-            // Set JWT as a cookie
+            // Set JWT Cookie with SameSite=None
             Cookie jwtCookie = new Cookie("jwt", jwtToken);
             jwtCookie.setHttpOnly(true);
             jwtCookie.setSecure(true);
             jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(24 * 60 * 60); // 1 day
-            response.addCookie(jwtCookie);
+            jwtCookie.setMaxAge(86400); // 1 day
+            jwtCookie.setAttribute("SameSite", "None"); // Required for cross-origin cookies
 
-            // Response
+            response.addCookie(jwtCookie); // ✅ FIX: Ensure cookie is set
+
             return ResponseEntity.status(201).body(
                     new SignUpResponse(savedUser.getId(), savedUser.getEmail(), savedUser.isProfileSetup())
             );
         } catch (Exception e) {
-            e.printStackTrace(); // Log the stack trace for debugging
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body("Internal Server Error");
         }
     }
-
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
@@ -87,12 +77,10 @@ public class AuthController {
             String email = loginRequest.getEmail();
             String password = loginRequest.getPassword();
 
-            // Check for required fields
             if (email == null || password == null) {
                 return ResponseEntity.badRequest().body("Email and Password are required.");
             }
 
-            // Find the user by email
             Optional<User> userOptional = userRepository.findByEmail(email);
             if (userOptional.isEmpty()) {
                 return ResponseEntity.status(404).body("User not found.");
@@ -100,23 +88,22 @@ public class AuthController {
 
             User user = userOptional.get();
 
-            // Verify password
             if (!passwordEncoder.matches(password, user.getPassword())) {
                 return ResponseEntity.badRequest().body("Password is incorrect.");
             }
 
-            // Generate JWT token
             String jwtToken = jwtUtil.generateToken(email, user.getId());
 
-            // Set JWT as a cookie
+            // ✅ FIX: Ensure SameSite=None and Secure for HTTPS
             Cookie jwtCookie = new Cookie("jwt", jwtToken);
             jwtCookie.setHttpOnly(true);
             jwtCookie.setSecure(true);
             jwtCookie.setPath("/");
-            jwtCookie.setMaxAge(24 * 60 * 60); // 1 day
-            response.addCookie(jwtCookie);
+            jwtCookie.setMaxAge(86400);
+            jwtCookie.setAttribute("SameSite", "None");
 
-            // Return user details
+            response.addCookie(jwtCookie); // ✅ FIX: Cookie was missing in response
+
             return ResponseEntity.ok(new LoginResponse(
                     user.getId(),
                     user.getEmail(),
@@ -137,18 +124,19 @@ public class AuthController {
     public ResponseEntity<?> logOut(@RequestBody LogOutRequest logoutRequest, HttpServletResponse response) {
         try {
             Optional<User> userOptional = userRepository.findById(logoutRequest.getUserId());
-
             if (userOptional.isEmpty()) {
                 return ResponseEntity.status(404).body("User not found");
             }
 
-            // Clear the JWT cookie
+            // ✅ FIX: Ensure SameSite=None in Logout
             Cookie jwtCookie = new Cookie("jwt", "");
-            jwtCookie.setMaxAge(1); // Cookie expires immediately
-            jwtCookie.setSecure(true); // Use secure cookies
-            jwtCookie.setHttpOnly(true); // HttpOnly for security
-            jwtCookie.setPath("/"); // Cookie path
-            response.addCookie(jwtCookie);
+            jwtCookie.setMaxAge(0); // Expires immediately
+            jwtCookie.setSecure(true);
+            jwtCookie.setHttpOnly(true);
+            jwtCookie.setPath("/");
+            jwtCookie.setAttribute("SameSite", "None");
+
+            response.addCookie(jwtCookie); // ✅ FIX: Cookie now properly deleted
 
             return ResponseEntity.ok("Logout Successful.");
         } catch (Exception e) {
